@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: initpod2
+  labels:
+    app: initilizer
+spec:
+  initContainers:
+    - name: init-ctr
+      image: busybox:1.28.4
+      command: ["sh","-c","until nslookup webservice; do echo waiting for web serivce; sleep 1; done; echo Service found!"]
+  containers:
+    - name: web-ctr
+      image: nigelpoulton/web-app:1.0
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+      ports:
+        - containerPort: 8080
