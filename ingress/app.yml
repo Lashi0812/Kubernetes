@@ -1,0 +1,63 @@
+# define two pod and two service
+# each pod have it own service
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-hydra
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    env: hydra
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-shield
+spec:
+  selector:
+    env: shield
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shield
+  labels:
+    env: shield
+spec:
+  containers:
+  - name: shield-ctr
+    image: docker.io/nigelpoulton/k8sbook:shield-ingress
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+    ports:
+      - containerPort: 8080
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hydra
+  labels:
+    env: hydra
+spec:
+  containers:
+  - name: hydra-ctr
+    image: docker.io/nigelpoulton/k8sbook:hydra-ingress
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 8080
+
+
+
+
+
